@@ -1,0 +1,269 @@
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f0f2f5;
+}
+
+.container {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+}
+
+.search-box {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+.weather-result {
+    position: relative;
+    /* margin-top: 20px;
+    padding: 20px; */
+    border-radius: 5px;
+    background-color: #f8f9fa;
+    z-index: 1;
+}
+
+.error {
+    color: #e74c3c;
+    text-align: center;
+}
+
+/* 現在の天気表示部分 */
+.current-weather {
+    position: relative;
+    width: 100%;
+    min-height: 500px;
+    border-radius: 15px;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    margin: 20px 0;
+}
+
+.weather-background-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.weather-background {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.weather-content {
+    position: relative;
+    z-index: 2;
+    padding: 2rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+}
+
+.temp-main {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.temperature {
+    font-size: 4rem;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.degree {
+    font-size: 2rem;
+    color: #2c3e50;
+    margin-left: 5px;
+}
+
+.weather-icon-container {
+    position: relative;
+    z-index: 3;
+    margin: 10px 0;
+}
+
+.weather-icon {
+    width: 120px;
+    height: 120px;
+}
+
+.weather-description {
+    font-size: 1.2rem;
+    color: #666;
+    margin: 5px 0;
+}
+
+/* 詳細情報表示部分 */
+.weather-details {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+.detail-item {
+    text-align: center;
+    padding: 0.5rem 1rem;
+}
+
+.label {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+/* 5日間予報部分 */
+.forecast-section {
+    position: relative;
+    z-index: 2;
+    margin-top: 30px;
+}
+
+.forecast-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+    overflow-x: auto;
+    padding: 10px 0;
+}
+
+.forecast-item {
+    position: relative;
+    z-index: 3;
+    flex: 1;
+    min-width: 120px;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.forecast-date {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #2c3e50;
+}
+
+.forecast-temp {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 8px 0;
+}
+
+.forecast-desc {
+    font-size: 14px;
+    color: #666;
+}
+
+.forecast-details {
+    font-size: 12px;
+    color: #666;
+    margin-top: 8px;
+}
+
+
+
+
+
+
+
+
+
+
+
+.weather-icon {
+    width: 80px;
+    height: 80px;
+    margin: 10px;
+    transition: transform 0.3s ease;
+}
+
+.weather-icon:hover {
+    transform: scale(1.1);
+}
+
+/* 予報用の小さいアイコン */
+.forecast-item .weather-icon {
+    width: 40px;
+    height: 40px;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 600px) {
+    .weather-details {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .detail-item {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    .temperature {
+        font-size: 3rem;
+    }
+
+    .degree {
+        font-size: 1.5rem;
+    }
+}

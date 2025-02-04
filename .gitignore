@@ -1,0 +1,14 @@
+# Node.js
+node_modules/
+dist/
+
+# 環境変数
+.env
+
+# エディタ設定
+.vscode/
+.idea/
+
+# OS関連
+.DS_Store
+Thumbs.db

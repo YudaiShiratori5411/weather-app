@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天気予報アプリ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>天気予報</h1>
+        <div class="search-box">
+            <input type="text" id="cityInput" placeholder="都市名を入力（例：東京）">
+            <button onclick="getWeather()">検索</button>
+        </div>
+        <div id="weatherResult" class="weather-result"></div>
+    </div>
+
+    <script>
+        // 天気状態に応じて動画ソースを返す関数
+        function getWeatherVideo(weatherMain) {
+            const videos = {
+                Clear: '/videos/sunny.mp4',
+                Clouds: '/videos/cloudy.mp4',
+                Rain: '/videos/rain.mp4',
+                Snow: '/videos/snow.mp4'
+            };
+            return videos[weatherMain] || videos.Clear;
+        }
+
+        // HTML内の天気アイコン部分を修正
+        function getWeatherIcon(weatherMain) {
+            // 天気に応じたSVGアイコンを返す
+            return `
+                <svg class="weather-icon" viewBox="0 0 100 100">
+                    ${getWeatherIconPath(weatherMain)}
+                </svg>
+            `;
+        }
+
+        function getWeatherIconPath(weatherMain) {
+            switch (weatherMain) {
+                case 'Clear':
+                    return `
+                        <circle cx="50" cy="50" r="20" fill="#FF6B6B"/>
+                        <g stroke="#FF6B6B" stroke-width="4">
+                            <line x1="50" y1="15" x2="50" y2="25"/>
+                            <line x1="50" y1="75" x2="50" y2="85"/>
+                            <line x1="15" y1="50" x2="25" y2="50"/>
+                            <line x1="75" y1="50" x2="85" y2="50"/>
+                            <line x1="25" y1="25" x2="35" y2="35"/>
+                            <line x1="65" y1="65" x2="75" y2="75"/>
+                            <line x1="25" y1="75" x2="35" y2="65"/>
+                            <line x1="65" y1="35" x2="75" y2="25"/>
+                        </g>`;
+
+                case 'Rain':
+                    return `
+                        <!-- メインの雨雲 -->
+                        <path d="M25,40 
+                                C25,30 35,25 45,25 
+                                C45,15 65,15 70,25
+                                C80,25 85,35 80,40
+                                C80,45 25,45 25,40" 
+                            fill="#8E9EAB" 
+                            stroke="#6E7B88"
+                            stroke-width="2"/>
+                        
+                        <!-- 雲の影/ハイライト -->
+                        <path d="M45,25 
+                                C45,15 65,15 70,25" 
+                            fill="none" 
+                            stroke="#6E7B88" 
+                            stroke-width="1.5"
+                            opacity="0.7"/>
+                        
+                        <!-- 雨滴 -->
+                        <g>
+                            <!-- 左側の雨滴 -->
+                            <path d="M30,50 
+                                    C30,50 33,55 30,60 
+                                    C27,55 30,50 30,50" 
+                                fill="#4A90E2"/>
+                            
+                            <!-- 中央左の雨滴 -->
+                            <path d="M45,45 
+                                    C45,45 48,50 45,55 
+                                    C42,50 45,45 45,45" 
+                                fill="#4A90E2"/>
+                            
+                            <!-- 中央の雨滴 -->
+                            <path d="M60,50 
+                                    C60,50 63,55 60,60 
+                                    C57,55 60,50 60,50" 
+                                fill="#4A90E2"/>
+                            
+                            <!-- 右側の雨滴 -->
+                            <path d="M75,45 
+                                    C75,45 78,50 75,55 
+                                    C72,50 75,45 75,45" 
+                                fill="#4A90E2"/>
+                        </g>`;
+
+                case 'Snow':
+                    return `
+                        <!-- 雪だるまの下部 -->
+                        <circle cx="50" cy="65" r="20" fill="white" stroke="#B8B8B8" stroke-width="2"/>
+                        <!-- 雪だるまの上部 -->
+                        <circle cx="50" cy="35" r="15" fill="white" stroke="#B8B8B8" stroke-width="2"/>
+                        <!-- 目 -->
+                        <circle cx="45" cy="32" r="2" fill="#4A4A4A"/>
+                        <circle cx="55" cy="32" r="2" fill="#4A4A4A"/>
+                        <!-- 口 -->
+                        <path d="M46,40 Q50,43 54,40" stroke="#4A4A4A" stroke-width="2" fill="none"/>
+                        <!-- 腕 -->
+                        <line x1="35" y1="55" x2="25" y2="45" stroke="#4A4A4A" stroke-width="2"/>
+                        <line x1="65" y1="55" x2="75" y2="45" stroke="#4A4A4A" stroke-width="2"/>`;
+
+                case 'Clouds':
+                    return `
+                        <!-- 後ろの雲 -->
+                        <path d="M15,40 
+                                C15,30 25,25 35,25 
+                                C35,15 50,15 55,25
+                                C65,25 70,35 65,40
+                                C65,45 15,45 15,40" 
+                            fill="#D3D9DE" 
+                            stroke="#BCC4CC"
+                            stroke-width="2"/>
+                        
+                        <!-- 手前の雲 -->
+                        <path d="M45,50 
+                                C45,40 55,35 65,35 
+                                C65,25 80,25 85,35
+                                C95,35 95,45 90,50
+                                C90,55 45,55 45,50" 
+                            fill="#B8C3CC" 
+                            stroke="#9EA7B0"
+                            stroke-width="2"/>
+                            
+                        <!-- 雲の影/ハイライト（後ろの雲） -->
+                        <path d="M35,25 
+                                C35,15 50,15 55,25" 
+                            fill="none" 
+                            stroke="#BCC4CC" 
+                            stroke-width="1.5"
+                            opacity="0.7"/>
+                            
+                        <!-- 雲の影/ハイライト（手前の雲） -->
+                        <path d="M65,35 
+                                C65,25 80,25 85,35" 
+                            fill="none" 
+                            stroke="#9EA7B0" 
+                            stroke-width="1.5"
+                            opacity="0.7"/>
+                `;
+
+                default:
+                    return `<circle cx="50" cy="50" r="25" fill="#D3D3D3"/>`;
+            }
+        }
+
+        async function getWeather() {
+            const cityInput = document.getElementById('cityInput');
+            const weatherResult = document.getElementById('weatherResult');
+            const city = cityInput.value;
+
+            if (!city) {
+                alert('都市名を入力してください');
+                return;
+            }
+
+            try {
+                // 現在の天気を取得
+                const weatherResponse = await fetch(`/api/weather/${city}`);
+                const weatherData = await weatherResponse.json();
+
+                // 5日間予報を取得
+                const forecastResponse = await fetch(`/api/forecast/${city}`);
+                const forecastData = await forecastResponse.json();
+
+                // 日付ごとに予報をグループ化
+                const dailyForecasts = forecastData.list.reduce((acc, forecast) => {
+                    const date = new Date(forecast.dt * 1000);
+                    const dateStr = date.toLocaleDateString('ja-JP');
+                    if (!acc[dateStr]) {
+                        acc[dateStr] = forecast;
+                    }
+                    return acc;
+                }, {});
+                
+                // 天気状態に応じて背景動画を取得
+                const videoSource = getWeatherVideo(weatherData.weather[0].main);
+
+                // 現在の天気のHTML
+                const currentWeatherHtml = `
+                    <div class="current-weather">
+                        <div class="weather-background-container">
+                            <video class="weather-background" autoplay loop muted playsinline>
+                                <source src="${videoSource}" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="weather-content">
+                            <h2>${weatherData.name}の天気</h2>
+                            <div class="temp-main">
+                                <div class="temp-container">
+                                    <span class="temperature">${weatherData.main.temp.toFixed(1)}</span>
+                                    <span class="degree">°C</span>
+                                </div>
+                                <div class="weather-icon-container">
+                                    ${getWeatherIcon(weatherData.weather[0].main)}
+                                    <p class="weather-description">${weatherData.weather[0].description}</p>
+                                </div>
+                            </div>
+                            <div class="weather-details">
+                                <div class="detail-item">
+                                    <span class="label">体感温度</span>
+                                    <span class="value">${weatherData.main.feels_like.toFixed(1)}°C</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="label">湿度</span>
+                                    <span class="value">${weatherData.main.humidity}%</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="label">風速</span>
+                                    <span class="value">${weatherData.wind.speed}m/s</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="label">気圧</span>
+                                    <span class="value">${weatherData.main.pressure}hPa</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // 5日間予報のHTML
+                const forecastHtml = `
+                    <div class="forecast-section">
+                        <h3>5日間予報</h3>
+                        <div class="forecast-container">
+                            ${Object.values(dailyForecasts).slice(1, 6).map(forecast => `
+                                <div class="forecast-item">
+                                    <p class="forecast-date">${new Date(forecast.dt * 1000).toLocaleDateString('ja-JP')}</p>
+                                    ${getWeatherIcon(forecast.weather[0].main)}
+                                    <p class="forecast-temp">${forecast.main.temp.toFixed(1)}°C</p>
+                                    <p class="forecast-desc">${forecast.weather[0].description}</p>
+                                    <div class="forecast-details">
+                                        <p>湿度: ${forecast.main.humidity}%</p>
+                                        <p>体感: ${forecast.main.feels_like.toFixed(1)}°C</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+
+                // 現在の天気と5日間予報を表示
+                weatherResult.innerHTML = currentWeatherHtml + forecastHtml;
+
+            } catch (error) {
+                weatherResult.innerHTML = '<p class="error">天気データの取得に失敗しました</p>';
+                console.error('エラー:', error);
+            }
+        }
+    </script>
+</body>
+</html>
